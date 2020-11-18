@@ -1,31 +1,41 @@
 import React from "react";
-
+import useRepositories from "./useRepositories";
 import "./styles.css";
 
 function App() {
-  async function handleAddRepository() {
-    // TODO
-  }
-
-  async function handleRemoveRepository(id) {
-    // TODO
-  }
+  const {
+    repositories,
+    loading,
+    deleteRepository,
+    addRepository,
+  } = useRepositories();
 
   return (
     <div>
       <ul data-testid="repository-list">
-        <li>
-          Repositório 1
+        {loading && <Loading />}
 
-          <button onClick={() => handleRemoveRepository(1)}>
-            Remover
-          </button>
-        </li>
+        {repositories.map((repo) => (
+          <ListItem
+            key={repo.id}
+            {...repo}
+            deleteRepository={deleteRepository}
+          />
+        ))}
       </ul>
 
-      <button onClick={handleAddRepository}>Adicionar</button>
+      <button onClick={addRepository}>Adicionar</button>
     </div>
   );
 }
+
+const Loading = () => <li key="loading">Carregando repositórios...</li>;
+
+const ListItem = ({ id, title, deleteRepository }) => (
+  <li>
+    {title}
+    <button onClick={() => deleteRepository(id)}>Remover</button>
+  </li>
+);
 
 export default App;
